@@ -27,11 +27,24 @@ const server = http.createServer((req, res)=> {
         return res.end(); 
     }
     if (url === '/message' && method === 'POST') {
-        fs.writeFileSync('message.txt', 'dummy');
-        res.statusCode = 302;
-        res.setHeader('Location', '/');
-        return res.end();
-    }
+        const body= [];
+        req.on('data', (chunk) => {
+            console.log(chunk)
+            body.push(chunk);
+        // on pozwala słuchać pewnych wydarzeń tutaj data, drugi argument do odpowiedz - chunk kawałek danych z którym pracujemy
+        });
+        req.on('end', () => {
+            const parasedBody = Buffer.concat(body).toString();
+            const message = parasedBody.split('=')[1];
+            fs.writeFile('message.txt', message,err => {
+                res.statusCode = 302;
+                res.setHeader('Location', '/');
+                return res.end();
+            //funkcja (err) zostanie wykonana po zakończeniu (zapisaniu pliku)- obsługa błędów, kod działa asynchronicznie, node zapisuje plik i w tum samym czasie
+            //wykonuje nast. linijki kodu. Funkcja err zosyanie wykonana po zapisaniu pliku.
+            });
+        });
+    };
     //console.log(req.url, req. method, req.headers);
     // process.exit(); <- po otrzzymaniu żadania proces się zatrzymuje, kończy pętlę zdarzeń,
 
