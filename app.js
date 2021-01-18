@@ -1,24 +1,10 @@
 const http = require('http'); //import modułu http
 
+const routes = require('./routes')
 
+//http.createServer(rqListener);
 
-
-/*
-function rqListener(req, res) {
-
-};
-//funkcja otrzymuje dwa argumenty odbierający żadanie i odpowiedz
-
-http.createServer(rqListener);
-//funkcja rqListener bedzie działać dla każdego prsychodzącego żądania
-
-//uzywamy funkcji strzałkowej
-
-*/
-const server = http.createServer((req, res)=> {
-
-
-});
+const server = http.createServer(routes);
 
 server.listen(3000);
 
