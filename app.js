@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 
@@ -11,18 +12,25 @@ next();
 // next - funkcja która zostanie przekazana do tej funkcji przez express aby umożliwić przejście do oprogramowania middleware,
 // pozwala na kontynuowanie następnego middleware 
 
+
+app.use(bodyParser.urlencoded({extended: false}));
+// 'parsowanie' - analizowanie przychodzacej treści żądania, oprogramowanie pośredniczące, przetwarza treśc żadania w body, nie przetwarz plików, json`ów itp
+
 app.use('/', (req, res, next) => {
-    console.log('This always runs');
+
     next();
 });
 
 app.use('/add-product', (req, res, next) => {
-    console.log('im next middleware');
-    res.send('<h1>Add product PAGE</h1>')
+    res.send('<form action="/product" method="POST"><input type="text" name="title"><button type="submit">Add product</button></form>')
+});
+
+app.post('/product', (req, res, next) => {
+    console.log(req.body);
+    res.redirect('/');
 });
 
 app.use('/', (req, res, next) => {
-    console.log('im next middleware');
     res.send('<h1>Hello from express</h1>')
 });
 
